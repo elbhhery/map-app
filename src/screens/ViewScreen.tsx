@@ -1,7 +1,7 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useRef, useEffect } from "react";
 import { BasicToolsControl } from "../components/BaseMap";
-import ViewNavBar from "../components/viewNavBar";
+import ViewNavBar from "../components/ViewNavBar";
 
 export default function ViewScreen() {
   const mapRef = useRef<L.Map | null>(null);
