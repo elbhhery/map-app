@@ -1,20 +1,20 @@
-import { useRef, useEffect, useState } from "react";
 import L from "leaflet";
+import { useRef, useEffect, useState } from "react";
 import shp from "shpjs";
 import logo from "../assets/icons/arrow03.png";
 //
 export function SmallNav() {
   return (
-    <nav className="h-screen bg-black/70 w-fit flex flex-col justify-between items-center relative z-50">
-      <div className="w-[72px] pt-[9px] flex flex-col items-center">
+    <nav className="lg:h-screen h-20 bg-black/70 lg:w-fit flex w-full bottom-0 flex-row lg:flex-col absolute lg:justify-between justify-center gap-8 lg:gap-0 items-center lg:relative z-50">
+      <div className="lg:w-[72px] lg:pt-[9px] flex flex-row lg:flex-col items-center gap-6 lg:gap-0">
         {" "}
         <img src={logo} alt="" className="w-10" />
-        <i className="fa-solid fa-house rounded-2xl mt-5 mb-6 text-3xl text-[#dcc89d]"></i>
+        <i className="fa-solid fa-house rounded-2xl lg:mt-5 lg:mb-6 text-3xl text-[#dcc89d]"></i>
         <i className="fa-solid fa-border-all text-3xl text-[#dcc89d]"></i>{" "}
       </div>
-      <div className="w-[72px] flex flex-col items-center mb-14">
+      <div className="lg:w-[72px] flex flex-row lg:flex-col items-center lg:mb-14 gap-6 lg:gap-0">
         {" "}
-        <i className="fa-solid fa-user mb-8 text-3xl text-[#dcc89d]"></i>
+        <i className="fa-solid fa-user lg:mb-8 text-3xl text-[#dcc89d]"></i>
         <i className="fa-solid fa-gear text-3xl text-[#dcc89d]"></i>
       </div>
     </nav>
@@ -79,17 +79,17 @@ export default function ViewNavBar({ mapRef }: ViewNavBarProps) {
   };
 
   return (
-    <aside className="w-[385px] fixed top-0 left-0 h-screen z-20">
+    <aside className="lg:w-[385px] w-full fixed top-0 left-0 h-screen! z-20">
       {/*  */}
       <SmallNav />
       <nav
         className={`${
-          showmenu ? "w-[313px]" : "w-[50px]"
-        } absolute top-0 left-[72px] h-screen z-10 bg-white`}
+          showmenu ? "lg:w-[313px]!" : "lg:w-[50px]!"
+        } absolute lg:left-[72px] bottom-22 w-full h-20 lg:h-screen lg:bottom-0 left-0 z-10 bg-white`}
       >
-        <div className=" h-[50px] bg-[#F5EEE0]"></div>
-        <div className="p-4 bg-[##FFFFFF]">
-          <div className="flex mt-3">
+        <div className=" h-[50px] bg-[#F5EEE0] hidden lg:block"></div>
+        <div className="p-4 bg-[#FFFFFF] flex lg:block items-center">
+          <div className="lg:flex mt-3 hidden">
             <i
               onClick={() => setShowmenu(!showmenu)}
               className={`fa-solid fa-arrow-left mr-2 text-2xl text-gray-200 ${
@@ -104,7 +104,11 @@ export default function ViewNavBar({ mapRef }: ViewNavBarProps) {
               Define Area Of Interest
             </p>
           </div>
-          <div className={`mt-10 mb-3  ${showmenu ? "" : "hidden"}`}>
+          <div
+            className={`mt-10 mb-3  ${
+              showmenu ? "" : "hidden!"
+            } hidden lg:block`}
+          >
             <p className="text-[18px]">
               <span className="font-bold">Define the areas(s) </span>
               where you will apply your object count & detection model
@@ -112,12 +116,12 @@ export default function ViewNavBar({ mapRef }: ViewNavBarProps) {
           </div>
 
           <label htmlFor="search" className={`${showmenu ? "" : "hidden"}`}>
-            Options:
+            Search Area:
           </label>
           <div
             className={`${
               showmenu ? "" : "hidden"
-            } relative max-w-[287px] w-[287px] h-28 `}
+            } lg:relative max-w-[287px] w-[287px] lg:h-28 `}
           >
             <input
               ref={inputRef}
@@ -125,7 +129,7 @@ export default function ViewNavBar({ mapRef }: ViewNavBarProps) {
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               className={`bg-[#f3ead9] ${
                 placeholder === true ? "z-10 h-1/2! pl-4" : ""
-              } absolute top-2 left-0 w-full h-full border-none focus:border focus:border-black outline-none rounded-[10px] text-[#857f76]`}
+              } lg:absolute top-2 ml-3 lg:ml-0 left-0 lg:w-full lg:h-full p-4 h-auto border-none focus:border focus:border-black outline-none rounded-[10px] text-[#857f76]`}
             />
 
             <div
@@ -135,7 +139,7 @@ export default function ViewNavBar({ mapRef }: ViewNavBarProps) {
               }}
               className={`p-4 rounded-[10px] ${
                 placeholder ? "opacity-0 pointer-events-none" : "opacity-100"
-              } flex items-center gap-4 text-[18.5px] font-normal text-[#7E786F] mt-2 absolute top-2 left-0`}
+              } lg:flex items-center gap-4 text-[18.5px] font-normal text-[#7E786F] mt-2 absolute top-2 left-0 hidden`}
             >
               <span>
                 <i className="fa-solid fa-magnifying-glass"></i>
@@ -151,8 +155,9 @@ export default function ViewNavBar({ mapRef }: ViewNavBarProps) {
               </p>
             </div>
           </div>
-          <div className={`mt-6 ${showmenu ? "" : "hidden"}`}>
-            <label className="h-[67px] pl-4 text-[#7e786f] bg-[#f5eee0] w-full rounded-[10px] text-left flex items-center gap-4 cursor-pointer">
+
+          <div className={`lg:mt-6 ${showmenu ? "" : "hidden"}`}>
+            <label className="lg:h-[67px] h-[60px] lg:pl-4 p-2 text-[#7e786f] bg-[#f5eee0] w-full rounded-[10px] text-left flex items-center gap-4 cursor-pointer">
               <i className="fa-regular fa-file mr-4"></i>
               Uploading a shape file
               <input

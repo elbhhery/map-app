@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./App.css";
-
+// import { Map } from "leaflet";
 import AOI from "./components/BaseMap";
 import BaseNavBar from "./components/BaseNavBar";
 import MapSwitch from "./components/mapSwitch";
@@ -8,6 +8,9 @@ import ViewScreen from "./screens/ViewScreen";
 
 function App() {
   const [viewMap, setViewMap] = useState("viewMap");
+  const [selectedAreas, setSelectedAreas] = useState<GeoJSON.GeoJsonObject[]>(
+    []
+  );
 
   const renderScreen = () => {
     if (viewMap === "viewMap") {
@@ -17,8 +20,15 @@ function App() {
     if (viewMap === "BaseMap") {
       return (
         <>
-          <BaseNavBar />
-          <AOI />
+          <BaseNavBar
+            areas={selectedAreas}
+            setAreas={setSelectedAreas}
+            clearAreas={() => {
+              setSelectedAreas([]);
+              localStorage.removeItem("savedShapes");
+            }}
+          />{" "}
+          <AOI setSelectedAreas={setSelectedAreas} />
         </>
       );
     }

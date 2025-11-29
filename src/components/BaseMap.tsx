@@ -13,6 +13,12 @@ import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 import { useEffect } from "react";
 import logo from "../assets/icons/arrow03.png";
+import Lineicon from "../assets/icons/Lineicon.png";
+import bezier from "../assets/icons/bezier-curve-tool-icon-illustration-design-GM4X6P.jpg";
+import cursor from "../assets/icons/cursor.png";
+import spaErase from "../assets/icons/spaErase.png";
+import move from "../assets/icons/move.png";
+
 // Fix default marker icons
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -47,51 +53,164 @@ function WMSLayer() {
   return null;
 }
 // ===================== CustomTools =====================
-export function CustomTools() {
+export function CustomTools({ setSelectedAreas }: { setSelectedAreas: any }) {
   const map = useMap();
 
-  setTimeout(() => {
-    document.getElementById("draw-polygon")!.onclick = () => {
-      map.pm.disableGlobalEditMode();
-      map.pm.disableGlobalRemovalMode();
-      map.pm.disableDraw();
-      map.pm.enableDraw("Polygon");
+  useEffect(() => {
+    // ================= Load saved shapes =================
+    const saved = localStorage.getItem("savedShapes");
+    if (saved) {
+      const layers = JSON.parse(saved);
+      setSelectedAreas(layers); // 🌟 مباشرة للـ state
+      layers.forEach((geo: any) => {
+        const layer = L.geoJSON(geo).addTo(map);
+        layer.eachLayer((lyr) => {
+          if (
+            lyr instanceof L.Polygon ||
+            lyr instanceof L.Polyline ||
+            lyr instanceof L.Marker ||
+            lyr instanceof L.Circle
+          ) {
+            if (lyr.pm) lyr.pm.enabled();
+          }
+        });
+      });
+    }
+
+    // ================= Auto-save + update state عند أي تعديل =================
+    const handleLayerChange = (e: any) => {
+      const layer = e.layer;
+
+      // نضيف الشكل الجديد مباشرة للـ state
+      if (
+        layer instanceof L.Polygon ||
+        layer instanceof L.Polyline ||
+        layer instanceof L.Marker ||
+        layer instanceof L.Circle
+      ) {
+        const geo = layer.toGeoJSON();
+        setSelectedAreas((prev: any) => {
+          const newAreas = [...prev, geo];
+          localStorage.setItem("savedShapes", JSON.stringify(newAreas));
+          return newAreas;
+        });
+      }
     };
 
-    document.getElementById("edit-polygon")!.onclick = () => {
-      map.pm.disableDraw();
-      map.pm.disableGlobalRemovalMode();
-      map.pm.enableGlobalEditMode();
-    };
+    map.on("pm:create", handleLayerChange);
+    map.on("pm:edit", () => {
+      // عند التعديل، نحفظ كل الـ layers مرة واحدة
+      const all: GeoJSON.GeoJsonObject[] = [];
+      map.eachLayer((layer) => {
+        if (
+          layer instanceof L.Polygon ||
+          layer instanceof L.Polyline ||
+          layer instanceof L.Marker ||
+          layer instanceof L.Circle
+        ) {
+          all.push(layer.toGeoJSON());
+        }
+      });
+      localStorage.setItem("savedShapes", JSON.stringify(all));
+      setSelectedAreas(all);
+    });
+    map.on("pm:remove", () => {
+      const all: GeoJSON.GeoJsonObject[] = [];
+      map.eachLayer((layer) => {
+        if (
+          layer instanceof L.Polygon ||
+          layer instanceof L.Polyline ||
+          layer instanceof L.Marker ||
+          layer instanceof L.Circle
+        ) {
+          all.push(layer.toGeoJSON());
+        }
+      });
+      localStorage.setItem("savedShapes", JSON.stringify(all));
+      setSelectedAreas(all);
+    });
 
-    document.getElementById("delete-shape")!.onclick = () => {
-      map.pm.disableDraw();
-      map.pm.disableGlobalEditMode();
-      map.pm.enableGlobalRemovalMode();
+    return () => {
+      map.off("pm:create", handleLayerChange);
+      map.off("pm:edit");
+      map.off("pm:remove");
     };
+  }, [map, setSelectedAreas]);
 
-    document.getElementById("pointer-tool")!.onclick = () => {
-      map.pm.disableDraw();
-      map.pm.disableGlobalEditMode();
-      map.pm.disableGlobalRemovalMode();
-    };
-  }, 300);
+  useEffect(() => {
+    setTimeout(() => {
+      document.getElementById("select-area")!.onclick = () => {
+        const onMapClick = () => {
+          map.pm.enableDraw("Polygon", {
+            finishOn: "dblclick",
+            templineStyle: { color: "blue", dashArray: "5,5" },
+            hintlineStyle: { color: "blue", dashArray: "5,5" },
+          });
+          map.pm.setGlobalOptions({ snappable: true, snapDistance: 20 });
+          map.off("click", onMapClick);
+        };
+        map.on("click", onMapClick);
+      };
 
-  return null;
+      document.getElementById("adjust-edge")!.onclick = () => {
+        map.pm.disableDraw();
+        map.pm.disableGlobalRemovalMode();
+        map.pm.enableGlobalEditMode();
+      };
+
+      document.getElementById("erase-shape")!.onclick = () => {
+        map.pm.disableDraw();
+        map.pm.disableGlobalEditMode();
+        map.pm.enableGlobalRemovalMode();
+      };
+
+      document.getElementById("normal-mode")!.onclick = () => {
+        map.pm.disableDraw();
+        map.pm.disableGlobalEditMode();
+        map.pm.disableGlobalRemovalMode();
+      };
+
+      document.getElementById("move-shape")!.onclick = () => {
+        map.pm.disableDraw();
+        map.pm.disableGlobalEditMode();
+        map.pm.disableGlobalRemovalMode();
+        map.pm.enableGlobalDragMode();
+      };
+    }, 300);
+  }, [map]);
+
+  return (
+    <div className="absolute top-20 right-2.5 z-999 bg-white p-4 rounded-[9px] flex flex-col gap-5 w-[66px]">
+      <button id="select-area">
+        <img src={Lineicon} alt="" className="w-8" />
+      </button>
+      <button id="adjust-edge">
+        <img src={bezier} alt="" className="w-8" />
+      </button>
+      <button id="normal-mode">
+        <img src={cursor} alt="" className="w-20" />
+      </button>
+      <button id="erase-shape">
+        <img src={spaErase} alt="" className="w-8" />
+      </button>
+      <button id="move-shape">
+        <img src={move} alt="" className="w-8" />
+      </button>
+    </div>
+  );
 }
-
 export function BasicToolsControl() {
   const map = useMap();
 
   useEffect(() => {
-    // إنشاء Custom Control
+    //  Custom Control
     const MyControl = L.Control.extend({
-      options: { position: "topright" }, // مكان الزرار
+      options: { position: "topright" },
       onAdd: function () {
         const container = L.DomUtil.create("div", "basic-tools-control");
         container.style.boxShadow = "0 2px 6px rgba(0,0,0,0.2)";
         container.style.position = "absolute";
-        container.style.top = "510px";
+        container.style.top = "350px";
         container.style.right = "10px";
         container.style.zIndex = "1000";
 
@@ -114,7 +233,6 @@ export function BasicToolsControl() {
     const control = new MyControl();
     map.addControl(control);
 
-    // إضافة الأحداث
     const btnIn = document.getElementById("zoom-in");
     const btnOut = document.getElementById("zoom-out");
 
@@ -124,7 +242,6 @@ export function BasicToolsControl() {
     btnIn?.addEventListener("click", zoomIn);
     btnOut?.addEventListener("click", zoomOut);
 
-    // تنظيف عند إزالة control
     return () => {
       btnIn?.removeEventListener("click", zoomIn);
       btnOut?.removeEventListener("click", zoomOut);
@@ -135,37 +252,39 @@ export function BasicToolsControl() {
   return null;
 }
 // ===================== MAIN MAP =====================
-export default function AOI() {
+export default function AOI({ setSelectedAreas }: { setSelectedAreas: any }) {
   return (
-    <MapContainer
-      center={[51.5, 7]}
-      zoom={17}
-      zoomControl={false}
-      style={{ height: "100vh", width: "100%" }}
-      attributionControl={false}
-      className="absolute top-0 z-0"
-    >
-      <WMSLayer />
+    <>
+      <MapContainer
+        center={[51.5, 7]}
+        zoom={17}
+        zoomControl={false}
+        style={{ height: "100vh", width: "100%" }}
+        attributionControl={false}
+        className="absolute top-0 z-0"
+      >
+        <WMSLayer />
 
-      <Marker position={[51.5, -0.09]}>
-        <Popup>Popup Example</Popup>
-      </Marker>
+        <Marker position={[51.5, -0.09]}>
+          <Popup>Popup Example</Popup>
+        </Marker>
 
-      <Circle
-        center={[51.508, -0.11]}
-        radius={500}
-        pathOptions={{ color: "red" }}
-      />
+        <Circle
+          center={[51.508, -0.11]}
+          radius={500}
+          pathOptions={{ color: "red" }}
+        />
 
-      <Polygon
-        positions={[
-          [51.509, -0.08],
-          [51.503, -0.06],
-          [51.51, -0.047],
-        ]}
-      />
-      <CustomTools />
-      <BasicToolsControl />
-    </MapContainer>
+        <Polygon
+          positions={[
+            [51.509, -0.08],
+            [51.503, -0.06],
+            [51.51, -0.047],
+          ]}
+        />
+        <BasicToolsControl />
+        <CustomTools setSelectedAreas={setSelectedAreas} />
+      </MapContainer>
+    </>
   );
 }

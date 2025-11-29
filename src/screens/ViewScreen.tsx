@@ -1,6 +1,6 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useRef, useEffect } from "react";
-import { BasicToolsControl } from "../components/BaseMap";
+import { BasicToolsControl } from "../components/BaseMap.tsx";
 import ViewNavBar from "../components/ViewNavBar.tsx";
 
 export default function ViewScreen() {
