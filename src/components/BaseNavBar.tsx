@@ -26,7 +26,7 @@ export default function BaseNavBar({
           <div
             className={`p-4 h-[680px] ${
               areas.length > 0 ? "flex" : ""
-            } justify-beteen flex-col`}
+            } justify-between flex-col`}
           >
             {areas.length > 0 ? (
               <>
