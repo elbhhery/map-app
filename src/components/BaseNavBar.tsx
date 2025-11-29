@@ -51,6 +51,7 @@ export default function BaseNavBar({
                     <h3 className="text-lg mt-7 pt-4 border-t border-[#7E786F]">
                       Defined Areas of interest
                     </h3>
+
                     {areas.map((geo, i) => (
                       <div
                         key={i}
@@ -64,6 +65,7 @@ export default function BaseNavBar({
                         <span className="flex gap-1 items-center">
                           <button
                             onClick={() => {
+                              console.log(geo);
                               const newAreas = areas.filter(
                                 (_, index) => index !== i
                               );
