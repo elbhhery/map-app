@@ -52,8 +52,6 @@ export default function BaseNavBar() {
               type="text"
               className="focus:border-none rounded-[10px] py-2 w-full px-3 mt-2 border border-[#7E786F]"
               placeholder="Colonge City Proper"
-              // value={value}
-              // onChange={(e) => handelInput(e)}
             />
             <button
               className={`bg-[#7e786f] py-4 w-full text-[18.5px] text-[#ede7d9] mt-10 mb-2 rounded-[10px]`}

@@ -50,7 +50,6 @@ function WMSLayer() {
 export function CustomTools() {
   const map = useMap();
 
-  // ربط الأزرار بنفس الطريقة اللي عندك
   setTimeout(() => {
     document.getElementById("draw-polygon")!.onclick = () => {
       map.pm.disableGlobalEditMode();

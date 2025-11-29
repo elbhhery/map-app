@@ -62,15 +62,12 @@ export default function ViewNavBar({ mapRef }: ViewNavBarProps) {
     const file = e.target.files[0];
 
     try {
-      // تحويل الملف إلى ArrayBuffer
       const arrayBuffer = await file.arrayBuffer();
 
-      // تحويل Shapefile إلى GeoJSON
       const geojson = await shp(arrayBuffer);
 
       console.log("GeoJSON data:", geojson);
 
-      // إضافة الطبقة على الخريطة
       if (mapRef.current) {
         const layer = L.geoJSON(geojson).addTo(mapRef.current);
         mapRef.current.fitBounds(layer.getBounds());

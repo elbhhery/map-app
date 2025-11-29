@@ -1,7 +1,7 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useRef, useEffect } from "react";
 import { BasicToolsControl } from "../components/BaseMap";
-import ViewNavBar from "../components/ViewNavBar";
+import ViewNavBar from "../components/ViewNavBar.tsx";
 
 export default function ViewScreen() {
   const mapRef = useRef<L.Map | null>(null);
@@ -20,7 +20,7 @@ export default function ViewScreen() {
         zoomControl={false}
         style={{ height: "100vh", width: "100%" }}
         className="absolute top-0 z-0"
-        ref={mapRef} // هنا بنمرر ref
+        ref={mapRef}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
