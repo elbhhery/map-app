@@ -1,0 +1,37 @@
+import { useState } from "react";
+import "./App.css";
+
+import AOI from "./components/BaseMap";
+import BaseNavBar from "./components/BaseNavBar";
+import MapSwitch from "./components/mapSwitch";
+import ViewScreen from "./screens/ViewScreen";
+
+function App() {
+  const [viewMap, setViewMap] = useState("viewMap");
+
+  const renderScreen = () => {
+    if (viewMap === "viewMap") {
+      return <ViewScreen />;
+    }
+
+    if (viewMap === "BaseMap") {
+      return (
+        <>
+          <BaseNavBar />
+          <AOI />
+        </>
+      );
+    }
+
+    return <ViewScreen />;
+  };
+
+  return (
+    <div className="relative z-10">
+      {renderScreen()}
+      <MapSwitch setViewMap={setViewMap} />
+    </div>
+  );
+}
+
+export default App;

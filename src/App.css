@@ -1,0 +1,9 @@
+@import "tailwindcss";
+* {
+  transition: 0.3s ease;
+  font-family: "Manrope", sans-serif;
+}
+a,
+button {
+  cursor: pointer;
+}
