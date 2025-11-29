@@ -6,8 +6,8 @@ export default function BaseNavBar({
   setAreas,
 }: {
   areas: GeoJSON.GeoJsonObject[];
-  setAreas: (areas: GeoJSON.GeoJsonObject[]) => void; // 🌟 لتمرير setState
-  clearAreas: () => void; // 🌟 زر لمسح كل البيانات
+  setAreas: (areas: GeoJSON.GeoJsonObject[]) => void;
+  clearAreas: () => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [showmenu, setShowmenu] = useState(true);

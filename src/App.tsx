@@ -1,6 +1,5 @@
 import { useState } from "react";
 import "./App.css";
-// import { Map } from "leaflet";
 import AOI from "./components/BaseMap";
 import BaseNavBar from "./components/BaseNavBar";
 import MapSwitch from "./components/mapSwitch";

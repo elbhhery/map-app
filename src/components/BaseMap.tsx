@@ -61,7 +61,7 @@ export function CustomTools({ setSelectedAreas }: { setSelectedAreas: any }) {
     const saved = localStorage.getItem("savedShapes");
     if (saved) {
       const layers = JSON.parse(saved);
-      setSelectedAreas(layers); // 🌟 مباشرة للـ state
+      setSelectedAreas(layers);
       layers.forEach((geo: any) => {
         const layer = L.geoJSON(geo).addTo(map);
         layer.eachLayer((lyr) => {
@@ -77,11 +77,10 @@ export function CustomTools({ setSelectedAreas }: { setSelectedAreas: any }) {
       });
     }
 
-    // ================= Auto-save + update state عند أي تعديل =================
+    // ================= Auto-save + update state =================
     const handleLayerChange = (e: any) => {
       const layer = e.layer;
 
-      // نضيف الشكل الجديد مباشرة للـ state
       if (
         layer instanceof L.Polygon ||
         layer instanceof L.Polyline ||
@@ -99,7 +98,6 @@ export function CustomTools({ setSelectedAreas }: { setSelectedAreas: any }) {
 
     map.on("pm:create", handleLayerChange);
     map.on("pm:edit", () => {
-      // عند التعديل، نحفظ كل الـ layers مرة واحدة
       const all: GeoJSON.GeoJsonObject[] = [];
       map.eachLayer((layer) => {
         if (
